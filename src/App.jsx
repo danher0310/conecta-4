@@ -138,6 +138,17 @@ function App() {
     return array    
   }
   
+  const resetGame = () =>{
+    setBoard(Array(42).fill(null))
+    setTurn(TURNS.R)
+    setWinner(null)
+
+  }
+
+  const checkEndGame = (newBoard)=>{
+    return newBoard.every((circule) => circule !==null )
+
+  }
   
   const updateBoard = (index) =>{    
     // actualizar el tablero 
@@ -150,7 +161,7 @@ function App() {
       if(newBoard[col[i]] === null && !winner ){
         newBoard[col[i]] = turn 
         break   
-      }
+      }// check the winner todo 
     }     
     
     
@@ -161,6 +172,9 @@ function App() {
     const newWinner = checkWinner(newBoard)
     if(newWinner){
       setWinner(newWinner)
+
+    }else if(checkEndGame(newBoard)){
+      setWinner(false)// empate
 
     }
     
@@ -175,6 +189,7 @@ function App() {
   return (
     <main className='board'>
       <h1>Conecta 4</h1>
+      <button onClick={resetGame} >Empezar el juedo de nuevo</button>
       <section className='game'>
         {
           board.map((col, index) => {
@@ -197,6 +212,30 @@ function App() {
         <Circule  isSelected={turn === TURNS.Y}>{TURNS.Y}</Circule>
 
       </section>
+
+      {
+        winner !== null && (
+          <section className='winner'>
+            <div className='text'>
+              <h2>
+                {
+                
+                  winner === false ? 'Empate' : 'Ganador'  
+                
+                } 
+                <header className='win'>
+                  {winner && <Circule>{winner}</Circule>}
+
+                </header>
+                <footer>
+                  <button onClick={resetGame} >Jugar otra vez</button>
+                </footer>
+              </h2>
+            </div>
+          </section>
+
+        )
+      }
 
     </main>
   )
