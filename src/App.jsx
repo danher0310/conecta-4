@@ -16,7 +16,7 @@ const columnas = [
   [6,13,20,27,34,41]
 ]
 
-const winnerComb = [
+const winnerCombs = [
   //combinaciones horizontales
   [0,1,2,3],
   [1,2,3,4],
@@ -44,10 +44,54 @@ const winnerComb = [
   [38,39,40,41],
   //combinaciones verticales 
   [0,7,14,21],
-  [7,14,21,28]
-  [14,21,28,35]  
+  [7,14,21,28],
+  [14,21,28,35], 
   [1,8,15,22],
+  [8,15,22,29],
+  [15,22,29,36],
+  [2,9,16,23],
+  [9,16,23,30],
+  [16,23,30,37],
+  [3,10,17,24],
+  [10,17,24,31],
+  [17,24,31,38],
+  [4,11,18,25],
+  [11,18,25,32],
+  [18,25,32,39],
+  [5,12,19,26],
+  [12,19,26,33],
+  [19,26,33,40],
+  [6,13,20,27],
+  [13,20,27,34],
+  [20,27,34,41],
+  //combinaciones diagonales
+  [0,8,16,23],
+  [8,16,24,32],
+  [16,24,32,40],
+  [1,9,17,25],
+  [9,17,25,33],
+  [17,25,33,41],
+  [2,10,18,26],
+  [10,18,26,34],
+  [3,11,19,27],
+  [7,15,23,31],
+  [15,23,31,39],
+  [14,22,30,38],
+  [3,9,15,21],
+  [4,10,16,22],
+  [10,16,22,28],
+  [5,11,17,23],
+  [11,17,23,29],
+  [17,23,29,35],
+  [6,12,18,24],
+  [12,18,24,30],
+  [18,24,30,36],
+  [13,19,25,31],
+  [19,25,31,37],
+  [20,26,32,38],
   
+
+
 ]
 
 const Circule = ({ children, isSelected, updateBoard, index}) => {
@@ -70,11 +114,28 @@ const Circule = ({ children, isSelected, updateBoard, index}) => {
 function App() {
   const [board, setBoard] = useState(Array(42).fill(null))
   const [turn, setTurn] = useState(TURNS.R)
+  const [winner, setWinner] = useState(null)
+  //null, no hay ganador aun, false empate, true ganador
 
+
+  const checkWinner = (boardTocheck) =>{    
+    for(const combo of winnerCombs){
+      // estamos revisando todos los combos ganadores
+      const [a, b, c, d] = combo;
+      if(
+        boardTocheck[a] && boardTocheck[a] === boardTocheck[b] && boardTocheck[b] === boardTocheck[c] && boardTocheck[c] === boardTocheck[d]  
+      ){
+
+        return boardTocheck[a]
+
+      }      
+
+    }
+    return null
+  }
   const checkCol = (indice) =>{
     const array = columnas.find((col) => col.includes(indice))
-    return array
-    
+    return array    
   }
   
   
@@ -86,17 +147,22 @@ function App() {
     let col = checkCol(index) 
     // validar en que posicion dela columan ira la pieza
     for(let i = col.length -1; i>=0; i--){
-      if(newBoard[col[i]] === null){
+      if(newBoard[col[i]] === null && !winner ){
         newBoard[col[i]] = turn 
         break   
       }
-    }  
-    
+    }     
     
     
     
     //newBoard[index] = turn       
     setBoard(newBoard)
+    //revisar posibles ganardres
+    const newWinner = checkWinner(newBoard)
+    if(newWinner){
+      setWinner(newWinner)
+
+    }
     
     const newTurn = turn === TURNS.R ? TURNS.Y : TURNS.R
     setTurn(newTurn)
@@ -118,7 +184,7 @@ function App() {
               index={index}
               updateBoard={updateBoard}
               >
-              {index}
+              {/* {index} */}
               {board[index]}
               </Circule>
             )
