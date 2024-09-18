@@ -14,10 +14,30 @@ import { ResetGameStorage, SaveGameStorage } from './logic/storage'
 function App() {
   const [game, setGame] = useState(1)
   
+
   const [board, setBoard] = useState(() => {
     const boardFromStorage = window.localStorage.getItem('board')
     return boardFromStorage ? JSON.parse(boardFromStorage) : Array(42).fill(null)
   })
+  const [winnerRed, setWinnerRed] = useState(() => {
+    const winnerRedFromStorage = parseInt(window.localStorage.getItem('winnerRed'))
+    return winnerRedFromStorage ?? 0
+  })
+  const [winnerYellow, setWinnerYellow] = useState(() => {
+    const winnerYellowFromStorage = parseInt(window.localStorage.getItem('winnerYellow'))
+    return winnerYellowFromStorage ?? 0
+  })
+  
+  const [lostRed, setLostRed] = useState(() => {
+    const lostRedFromStorage = parseInt(window.localStorage.getItem('lostRed'))
+    return lostRedFromStorage ?? 0
+  })
+  const [lostYellow, setLostYellow] = useState(() => {
+    const lostYellowFromStorage = parseInt(window.localStorage.getItem('lostYellow'))
+    return lostYellowFromStorage ?? 0
+  })
+  const [empate, setEmpate] = useState(0)
+
   const [turn, setTurn] = useState(() => {
     const turnFromStorage = window.localStorage.getItem('turn')
     return turnFromStorage ?? TURNS.R;
@@ -62,6 +82,23 @@ function App() {
     //revisar posibles ganardres
     const newWinner = checkWinner(newBoard)
     if(newWinner){
+      if(newWinner === TURNS.R){
+        setWinnerRed(prevWinnerRed => prevWinnerRed+1)
+        setLostYellow(prevLostYellow => prevLostYellow+1)
+        // console.log(`aqui ${newVictoryRed}`)
+        // window.localStorage.setItem('winnerRed', winnerRed )
+        // window.localStorage.setItem('lostYellow', newLostYellow)   
+
+
+
+      }
+      else{
+       setWinnerYellow(prevWinnerYellow => prevWinnerYellow+1)      
+        setLostRed(prevLostRed => prevLostRed+1)
+        // window.localStorage.setItem('winnerYellow', newVictoryYellow)
+        // window.localStorage.setItem('lostRed', newRedYellow)
+      }
+      console.log(newWinner)
       confetti()
       setWinner(newWinner)
       setGame(prevGame => prevGame+1)
@@ -70,6 +107,8 @@ function App() {
 
     }else if(checkEndGame(newBoard)){
       setWinner(false)// empate
+      const newDraft = setEmpate(prevEmpate => prevEmpate+1)
+      window.localStorage.setItem('empate', newDraft)
 
     }
     
@@ -78,19 +117,16 @@ function App() {
     SaveGameStorage({board: newBoard, turn: newTurn})
 
 
+
   }
 
   useEffect(()=>{
-    console.log(game)
     const newTurn = (game > 1 && game % 2 == 0) ?  TURNS.Y : TURNS.R;
-    setTurn(newTurn)        
-   
+    setTurn(newTurn) 
     if(winner){
-      console.log(winner)
-    }else if(winner === false){
-      console.log('empate2')
-    }
-    
+      console.log(winnerRed)
+    }     
+      
 
     
   }, [game, winner])
@@ -100,6 +136,25 @@ function App() {
   return (
     <main className='board'>
       <h1>Conecta 4</h1>
+        <h2>Score:</h2>        
+        <section className='score'>
+          <div className='red'>
+            <Circule  >{TURNS.R}</Circule>
+            <p className='winText'>Victorias:{winnerRed}</p>
+            <p className='lostText'>Derrotas:{lostRed}</p>
+
+
+          </div>
+          <div className='yellow'>
+            <Circule  >{TURNS.Y}</Circule>
+              <p className='winText'>Victorias:{winnerYellow}</p>
+              <p className='lostText'>Derrotas:{lostYellow}</p>
+          </div>       
+        </section>
+        <section className='draw'>
+          <h2>Empates: {empate}</h2>
+        </section>
+
         <ResetButton resetGame={resetGame}/>
         <BoardGame board={board} updateBoard={updateBoard} />
       <section className='turn'>

@@ -72,6 +72,35 @@ body{
   
 }
 
+.score{
+  display: flex;
+  gap: 50px;
+  margin-top: 30px;
+  justify-content: center;
+}
+.score  .circule{
+  margin-bottom: 20px 10px;
+}
+.red p, 
+.yellow p{
+  font-size: 20px;
+  font-weight: bold;
+  margin: 5px;
+}
+
+.score .winText{
+  color: #24c03e;
+}
+
+.score .lostText{
+  color: #df1c1c;
+}
+
+.board h2{
+  font-size: 40px;
+  margin-top: 40px;
+}
+
 .turn{
   display: flex;
   justify-content: center;

@@ -5,7 +5,7 @@
  * Requisitos:
  * - Tablero de 7x6 (7 en el eje "x" y 6 en el "y"). --- Done
  * 
- * - Fichas Rojas y Amarillas. La primera partida la comienza siempre la Roja (la segunda la Amarilla, la tercera la Roja...). --(todo)
+ * - Fichas Rojas y Amarillas. La primera partida la comienza siempre la Roja (la segunda la Amarilla, la tercera la Roja...). --(done)
  *   
  * - No hay que implementar una funcionalidad que te permita jugar contra la App.
  *   Se asume que jugarán dos personas reales alternándose. (done)
@@ -17,3 +17,5 @@
  * 
  * - Puedes añadirle todas las funcionalidades extra que consideres.
  */
+
+
