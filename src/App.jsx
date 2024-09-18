@@ -1,21 +1,31 @@
-import {  useState } from 'react'
+import {  useEffect, useState } from 'react'
 import confetti from 'canvas-confetti'
-import Circule from './components/Circule'
+import {Circule} from './components/CirculeSection'
 import { TURNS, columnas } from './constants'
 import { checkWinner, checkEndGame } from './logic/board'
 import { WinnerModal } from './components/WinnerModal'
 import './App.css'
 import { BoardGame } from './components/BoardGame'
 import { ResetButton } from './components/Button'
+import { ResetGameStorage, SaveGameStorage } from './logic/storage'
 
 
 
 function App() {
-  const [board, setBoard] = useState(Array(42).fill(null))
-  const [turn, setTurn] = useState(TURNS.R)
+  const [game, setGame] = useState(1)
+  
+  const [board, setBoard] = useState(() => {
+    const boardFromStorage = window.localStorage.getItem('board')
+    return boardFromStorage ? JSON.parse(boardFromStorage) : Array(42).fill(null)
+  })
+  const [turn, setTurn] = useState(() => {
+    const turnFromStorage = window.localStorage.getItem('turn')
+    return turnFromStorage ?? TURNS.R;
+  })
   const [winner, setWinner] = useState(null)
   //null, no hay ganador aun, false empate, true ganador
 
+ 
 
   
   const checkCol = (indice) =>{
@@ -25,8 +35,10 @@ function App() {
   
   const resetGame = () =>{
     setBoard(Array(42).fill(null))
-    setTurn(TURNS.R)
+    //setTurn(TURNS.R)
     setWinner(null)
+    ResetGameStorage()    
+
 
   }
 
@@ -44,10 +56,7 @@ function App() {
         newBoard[col[i]] = turn 
         break   
       }// check the winner todo 
-    }     
-    
-    
-    
+    }  
     //newBoard[index] = turn       
     setBoard(newBoard)
     //revisar posibles ganardres
@@ -55,6 +64,9 @@ function App() {
     if(newWinner){
       confetti()
       setWinner(newWinner)
+      setGame(prevGame => prevGame+1)
+
+      
 
     }else if(checkEndGame(newBoard)){
       setWinner(false)// empate
@@ -63,9 +75,25 @@ function App() {
     
     const newTurn = turn === TURNS.R ? TURNS.Y : TURNS.R
     setTurn(newTurn)
+    SaveGameStorage({board: newBoard, turn: newTurn})
 
 
   }
+
+  useEffect(()=>{
+    console.log(game)
+    const newTurn = (game > 1 && game % 2 == 0) ?  TURNS.Y : TURNS.R;
+    setTurn(newTurn)        
+   
+    if(winner){
+      console.log(winner)
+    }else if(winner === false){
+      console.log('empate2')
+    }
+    
+
+    
+  }, [game, winner])
 
 
  
@@ -75,7 +103,7 @@ function App() {
         <ResetButton resetGame={resetGame}/>
         <BoardGame board={board} updateBoard={updateBoard} />
       <section className='turn'>
-        <h2>Turn</h2>
+        <h2 className='title'>Turn:</h2>
         <Circule  isSelected={turn === TURNS.R}>{TURNS.R}</Circule>
         <Circule  isSelected={turn === TURNS.Y}>{TURNS.Y}</Circule>
 

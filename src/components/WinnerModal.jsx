@@ -1,6 +1,7 @@
 
-import { Circule } from "./Circule"
+import { Circule } from "./CirculeSection"
 import { ResetButton } from "./Button"
+// eslint-disable-next-line react/prop-types
 export function WinnerModal ({winner, resetGame}) {
 
   if (winner === null) return null

@@ -21,6 +21,7 @@ body{
   justify-content: center;
   min-width: 600px;
   min-height: 250vh;
+  max-height: 1200px;
 }
 
 *{
@@ -136,6 +137,12 @@ body{
   color: red;
   
 
+}
+.turn .title{
+  font-size: 50px;
+  justify-content: center;
+  display: block;
+  margin: auto;
 }
 
 .turn .circule{

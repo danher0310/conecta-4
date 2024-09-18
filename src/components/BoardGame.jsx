@@ -1,10 +1,12 @@
 
-import { Circule } from "./Circule"
+import { Circule } from "./CirculeSection"
+// eslint-disable-next-line react/prop-types
 export function BoardGame ({board, updateBoard }) {
   return (
     <section className='game'>
         {
-          board.map((col, index) => {
+          // eslint-disable-next-line react/prop-types
+          board.map((_, index) => {
             return(
              <Circule 
               key={index}
