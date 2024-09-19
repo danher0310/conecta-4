@@ -1,6 +1,7 @@
 // eslint-disable-next-line react/prop-types
-export const ResetButton = ({resetGame})=>{
+export const Button = ({children, functionGame, className})=>{
+  const classNames = `button ${className}`
   return(
-    <button onClick={resetGame} >Empezar el juego de nuevo</button>
+    <button onClick={functionGame} className={classNames} >{children}</button>
   )
 }

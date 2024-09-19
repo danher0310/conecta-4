@@ -1,8 +1,8 @@
 
 import { Circule } from "./CirculeSection"
-import { ResetButton } from "./Button"
+import { Button } from "./Button"
 // eslint-disable-next-line react/prop-types
-export function WinnerModal ({winner, resetGame}) {
+export function WinnerModal ({winner, functionGame}) {
 
   if (winner === null) return null
   const winnerText = winner === false ? 'Empate' : 'Gano'
@@ -18,7 +18,7 @@ export function WinnerModal ({winner, resetGame}) {
 
           </header>
           <footer>
-          <ResetButton resetGame={resetGame}/>
+          <Button functionGame={functionGame}>Limpiar tablero</Button>
           </footer>
         
       </div>

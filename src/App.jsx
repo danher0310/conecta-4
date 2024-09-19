@@ -6,8 +6,8 @@ import { checkWinner, checkEndGame } from './logic/board'
 import { WinnerModal } from './components/WinnerModal'
 import './App.css'
 import { BoardGame } from './components/BoardGame'
-import { ResetButton } from './components/Button'
-import { ResetGameStorage, SaveGameStorage } from './logic/storage'
+import { Button } from './components/Button'
+import { ResetGameStorage, ResetScoreStorage, SaveGameStorage } from './logic/storage'
 
 
 
@@ -64,7 +64,7 @@ function App() {
     return array    
   }
   
-  const resetGame = () =>{
+  const cleanBoard = () =>{
     setBoard(Array(42).fill(null))
     //setTurn(TURNS.R)
     setWinner(null)
@@ -72,6 +72,23 @@ function App() {
 
 
   }
+
+  const resetGame = () =>{
+    setBoard(Array(42).fill(null))
+    setTurn(TURNS.R)
+    setWinner(null)
+    ResetGameStorage() 
+    setScore( {
+      redPlayer: {victorias:0, derrotas:0},
+      yellowPlayer: {victorias:0, derrotas:0}
+    }
+    )
+    setEmpate(0)
+    ResetScoreStorage()   
+
+
+  }
+
 
  
   
@@ -117,20 +134,11 @@ function App() {
 
 
 
-
-
-
-
   }
 
   useEffect(()=>{
     const newTurn = (game > 1 && game % 2 == 0) ?  TURNS.Y : TURNS.R;
-    setTurn(newTurn)    
-
-    
-    
-      
-
+    setTurn(newTurn)   
     
   }, [game])
 
@@ -158,7 +166,8 @@ function App() {
           <h2>Empates: {empate}</h2>
         </section>
 
-        <ResetButton resetGame={resetGame}/>
+        <Button functionGame={cleanBoard} className='cleanButton'>Limpiar tablero</Button>
+        <Button functionGame={resetGame} className='resetGame'>Reiniciar Juego</Button>
         <BoardGame board={board} updateBoard={updateBoard} />
       <section className='turn'>
         <h2 className='title'>Turn:</h2>
@@ -167,7 +176,7 @@ function App() {
 
       </section>
 
-     <WinnerModal resetGame={resetGame} winner={winner} />
+     <WinnerModal functionGame={cleanBoard} winner={winner} />
 
     </main>
   )
