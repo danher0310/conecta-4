@@ -11,7 +11,15 @@ import { ResetGameStorage, SaveGameStorage } from './logic/storage'
 
 
 
+
 function App() {
+  const [score, setScore] =useState(() =>{
+    const scoreFromStorage = localStorage.getItem('scores')
+    return scoreFromStorage ? JSON.parse(scoreFromStorage) : {
+    redPlayer: {victorias:0, derrotas:0},
+    yellowPlayer: {victorias:0, derrotas:0},
+  }
+  })
   const [game, setGame] = useState(1)
   
 
@@ -19,24 +27,13 @@ function App() {
     const boardFromStorage = window.localStorage.getItem('board')
     return boardFromStorage ? JSON.parse(boardFromStorage) : Array(42).fill(null)
   })
-  const [winnerRed, setWinnerRed] = useState(() => {
-    const winnerRedFromStorage = parseInt(window.localStorage.getItem('winnerRed'))
-    return winnerRedFromStorage ?? 0
-  })
-  const [winnerYellow, setWinnerYellow] = useState(() => {
-    const winnerYellowFromStorage = parseInt(window.localStorage.getItem('winnerYellow'))
-    return winnerYellowFromStorage ?? 0
-  })
   
-  const [lostRed, setLostRed] = useState(() => {
-    const lostRedFromStorage = parseInt(window.localStorage.getItem('lostRed'))
-    return lostRedFromStorage ?? 0
+  
+
+  const [empate, setEmpate] = useState(() =>{
+    const empatesFromStorage =  parseInt(window.localStorage.getItem('empate'))
+    return empatesFromStorage ?? 0
   })
-  const [lostYellow, setLostYellow] = useState(() => {
-    const lostYellowFromStorage = parseInt(window.localStorage.getItem('lostYellow'))
-    return lostYellowFromStorage ?? 0
-  })
-  const [empate, setEmpate] = useState(0)
 
   const [turn, setTurn] = useState(() => {
     const turnFromStorage = window.localStorage.getItem('turn')
@@ -45,6 +42,20 @@ function App() {
   const [winner, setWinner] = useState(null)
   //null, no hay ganador aun, false empate, true ganador
 
+  const handlerScore = (winnerPlayer)  =>{
+    
+      const newScore = { ...score }
+      if(winnerPlayer === TURNS.R){        
+        newScore.redPlayer.victorias +=1
+        newScore.yellowPlayer.derrotas +=1
+        setScore(newScore)
+        
+      }else{
+        newScore.yellowPlayer.victorias +=1
+        newScore.redPlayer.derrotas +=1
+      }
+      window.localStorage.setItem('scores', JSON.stringify(newScore))
+  }
  
 
   
@@ -82,39 +93,31 @@ function App() {
     //revisar posibles ganardres
     const newWinner = checkWinner(newBoard)
     if(newWinner){
-      if(newWinner === TURNS.R){
-        setWinnerRed(prevWinnerRed => prevWinnerRed+1)
-        setLostYellow(prevLostYellow => prevLostYellow+1)
-        // console.log(`aqui ${newVictoryRed}`)
-        // window.localStorage.setItem('winnerRed', winnerRed )
-        // window.localStorage.setItem('lostYellow', newLostYellow)   
-
-
-
-      }
-      else{
-       setWinnerYellow(prevWinnerYellow => prevWinnerYellow+1)      
-        setLostRed(prevLostRed => prevLostRed+1)
-        // window.localStorage.setItem('winnerYellow', newVictoryYellow)
-        // window.localStorage.setItem('lostRed', newRedYellow)
-      }
-      console.log(newWinner)
+      handlerScore(newWinner)
       confetti()
       setWinner(newWinner)
-      setGame(prevGame => prevGame+1)
+      setGame(prevGame => prevGame+1)     
 
       
 
     }else if(checkEndGame(newBoard)){
-      setWinner(false)// empate
-      const newDraft = setEmpate(prevEmpate => prevEmpate+1)
-      window.localStorage.setItem('empate', newDraft)
+      setWinner(false)// empate  
+      const newEmpate = empate+1
+      setEmpate(newEmpate)
+      window.localStorage.setItem('empate', newEmpate)
+      
+      
 
     }
     
     const newTurn = turn === TURNS.R ? TURNS.Y : TURNS.R
     setTurn(newTurn)
+
     SaveGameStorage({board: newBoard, turn: newTurn})
+
+
+
+
 
 
 
@@ -122,14 +125,14 @@ function App() {
 
   useEffect(()=>{
     const newTurn = (game > 1 && game % 2 == 0) ?  TURNS.Y : TURNS.R;
-    setTurn(newTurn) 
-    if(winner){
-      console.log(winnerRed)
-    }     
+    setTurn(newTurn)    
+
+    
+    
       
 
     
-  }, [game, winner])
+  }, [game])
 
 
  
@@ -140,15 +143,15 @@ function App() {
         <section className='score'>
           <div className='red'>
             <Circule  >{TURNS.R}</Circule>
-            <p className='winText'>Victorias:{winnerRed}</p>
-            <p className='lostText'>Derrotas:{lostRed}</p>
+            <p className='winText'>Victorias:{score.redPlayer.victorias}</p>
+            <p className='lostText'>Derrotas:{score.redPlayer.derrotas}</p>
 
 
           </div>
           <div className='yellow'>
             <Circule  >{TURNS.Y}</Circule>
-              <p className='winText'>Victorias:{winnerYellow}</p>
-              <p className='lostText'>Derrotas:{lostYellow}</p>
+              <p className='winText'>Victorias:{score.yellowPlayer.victorias}</p>
+              <p className='lostText'>Derrotas:{score.yellowPlayer.derrotas}</p>
           </div>       
         </section>
         <section className='draw'>

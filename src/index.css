@@ -114,11 +114,10 @@ body{
 .winner{
   position: absolute;
   width: 100vw;
-  height: 100vh;
+  height: 150vh;
   top: 0;
   left: 0;
-  display: grid;
-  
+  display: grid;  
   place-items: center;
   background-color: rgba(0, 0, 0, 0.7);
 }
@@ -163,7 +162,7 @@ body{
   font-size: 60px;
   padding: 10px;
   background-color: white;
-  color: red;
+  color:red
   
 
 }
